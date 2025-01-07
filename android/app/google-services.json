@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "722815712691",
+    "project_id": "solutech-interview-sam-baraka",
+    "storage_bucket": "solutech-interview-sam-baraka.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:722815712691:android:50e5cf841b9b03caa85fc6",
+        "android_client_info": {
+          "package_name": "com.solutech.interview"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9gOVGXZTGpc81I55gnKoa6MWqbPa0_Ag"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

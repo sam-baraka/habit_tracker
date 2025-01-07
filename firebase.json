@@ -1,13 +1,1 @@
-{
-  "hosting": {
-    "source": ".",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "frameworksBackend": {
-      "region": "us-central1"
-    }
-  }
-}
+{"hosting":{"source":".","ignore":["firebase.json","**/.*","**/node_modules/**"],"frameworksBackend":{"region":"us-central1"}},"flutter":{"platforms":{"android":{"default":{"projectId":"solutech-interview-sam-baraka","appId":"1:722815712691:android:50e5cf841b9b03caa85fc6","fileOutput":"android/app/google-services.json"}},"ios":{"default":{"projectId":"solutech-interview-sam-baraka","appId":"1:722815712691:ios:f7be58eee93ecb85a85fc6","uploadDebugSymbols":false,"fileOutput":"ios/Runner/GoogleService-Info.plist"}},"dart":{"lib/firebase_options.dart":{"projectId":"solutech-interview-sam-baraka","configurations":{"android":"1:722815712691:android:50e5cf841b9b03caa85fc6","ios":"1:722815712691:ios:f7be58eee93ecb85a85fc6","web":"1:722815712691:web:1960e5135aa7cb17a85fc6"}}}}}}
