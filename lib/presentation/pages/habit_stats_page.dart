@@ -48,7 +48,6 @@ class HabitStatsPage extends StatelessWidget {
       duration: const Duration(milliseconds: 1000),
       curve: Curves.easeOut,
       builder: (context, value, child) {
-        final xpForNext = GamificationService.xpForNextLevel(habit.xp);
         final xpProgress = habit.xp % GamificationService.xpPerLevel;
         final animatedProgress =
             value * (xpProgress / GamificationService.xpPerLevel);
