@@ -1,8 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:solutech_interview/domain/models/habit.dart';
 import 'package:solutech_interview/presentation/blocs/habit/habit_bloc.dart';
-import 'package:solutech_interview/presentation/widgets/add_habit_dialog.dart';
+import 'package:solutech_interview/presentation/widgets/habit_progress_card.dart';
+import 'package:solutech_interview/routes/router.dart';
 
 class HabitCard extends StatefulWidget {
   final Habit habit;
@@ -16,34 +18,70 @@ class HabitCard extends StatefulWidget {
   State<HabitCard> createState() => _HabitCardState();
 }
 
-class _HabitCardState extends State<HabitCard> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-  late final Animation<double> _scaleAnimation;
-  late final Animation<double> _fadeAnimation;
+class _HabitCardState extends State<HabitCard> with TickerProviderStateMixin {
+  late AnimationController _slideController;
+  late AnimationController _scaleController;
+  late Animation<Offset> _slideAnimation;
+  late Animation<double> _scaleAnimation;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
+    _slideController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-
-    _scaleAnimation = Tween<double>(begin: 0.95, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    _scaleController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
     );
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(1.0, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _slideController,
+      curve: Curves.easeOut,
+    ));
 
-    _controller.forward();
+    _scaleAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.0, end: 1.2),
+        weight: 1.0,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.2, end: 1.0),
+        weight: 1.0,
+      ),
+    ]).animate(CurvedAnimation(
+      parent: _scaleController,
+      curve: Curves.easeInOut,
+    ));
+
+    _slideController.forward();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _slideController.dispose();
+    _scaleController.dispose();
     super.dispose();
+  }
+
+  void _showLevelUpDialog(BuildContext context, int newLevel) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Level Up! 🎉'),
+        content: Text('Congratulations! You reached level $newLevel!'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Continue'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -57,215 +95,171 @@ class _HabitCardState extends State<HabitCard> with SingleTickerProviderStateMix
           date.day == today.day,
     );
 
-    return FadeTransition(
-      opacity: _fadeAnimation,
+    return SlideTransition(
+      position: _slideAnimation,
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: Card(
-          margin: const EdgeInsets.only(bottom: 16),
-          child: InkWell(
-            onTap: () {},
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: isCompletedToday ? Colors.green : Colors.transparent,
-                  width: 2,
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+            margin: const EdgeInsets.only(bottom: 16),
+            child: InkWell(
+              onTap: () {
+                AutoRouter.of(context)
+                    .push(HabitStatsRoute(habit: widget.habit));
+              },
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                widget.habit.name,
-                                style: theme.textTheme.titleLarge,
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                widget.habit.description,
-                                style: theme.textTheme.bodyMedium,
-                              ),
-                            ],
-                          ),
-                        ),
-                        PopupMenuButton<String>(
-                          onSelected: (value) {
-                            if (value == 'edit') {
-                              _showEditDialog(context);
-                            } else if (value == 'delete') {
-                              _showDeleteConfirmation(context);
-                            }
-                          },
-                          itemBuilder: (context) => [
-                            const PopupMenuItem(
-                              value: 'edit',
-                              child: Row(
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Icon(Icons.edit),
-                                  SizedBox(width: 8),
-                                  Text('Edit'),
+                                  Text(
+                                    widget.habit.name,
+                                    style: theme.textTheme.titleLarge,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    widget.habit.description,
+                                    style: theme.textTheme.bodyMedium,
+                                  ),
                                 ],
                               ),
                             ),
-                            const PopupMenuItem(
-                              value: 'delete',
-                              child: Row(
-                                children: [
-                                  Icon(Icons.delete, color: Colors.red),
-                                  SizedBox(width: 8),
-                                  Text('Delete', style: TextStyle(color: Colors.red)),
-                                ],
+                            IconButton(
+                              icon: const Icon(Icons.more_vert),
+                              onPressed: () => _showOptionsDialog(context),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _buildStatChip(
+                              context,
+                              'Streak: ${widget.habit.currentStreak}',
+                              Icons.local_fire_department,
+                              Colors.orange,
+                            ),
+                            _buildStatChip(
+                              context,
+                              'Level ${widget.habit.level}',
+                              Icons.star,
+                              Colors.amber,
+                            ),
+                            ElevatedButton.icon(
+                              onPressed: isCompletedToday
+                                  ? null
+                                  : () => _onComplete(context),
+                              icon: Icon(
+                                isCompletedToday
+                                    ? Icons.check_circle
+                                    : Icons.check_circle_outline,
+                              ),
+                              label: Text(
+                                isCompletedToday ? 'Completed' : 'Complete',
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: isCompletedToday
+                                    ? Colors.green.withOpacity(0.6)
+                                    : null,
                               ),
                             ),
                           ],
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _buildAnimatedStatChip(
-                          context,
-                          'Level ${widget.habit.level}',
-                          Icons.star,
-                          Colors.amber,
-                        ),
-                        _buildAnimatedStatChip(
-                          context,
-                          '${widget.habit.currentStreak} day streak',
-                          Icons.local_fire_department,
-                          Colors.orange,
-                        ),
-                        _buildAnimatedStatChip(
-                          context,
-                          '${widget.habit.xp} XP',
-                          Icons.flash_on,
-                          Colors.purple,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            '${widget.habit.frequency}x per week',
-                            style: theme.textTheme.bodyMedium,
-                          ),
-                        ),
-                        Hero(
-                          tag: 'complete_button_${widget.habit.id}',
-                          child: ElevatedButton.icon(
-                            onPressed: isCompletedToday
-                                ? null
-                                : () {
-                                    _animateCompletion(() {
-                                      context
-                                          .read<HabitBloc>()
-                                          .add(MarkHabitCompleted(widget.habit));
-                                    });
-                                  },
-                            icon: AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 300),
-                              child: Icon(
-                                isCompletedToday
-                                    ? Icons.check_circle
-                                    : Icons.circle_outlined,
-                                key: ValueKey(isCompletedToday),
-                              ),
-                            ),
-                            label: AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 300),
-                              child: Text(
-                                isCompletedToday ? 'Completed' : 'Complete',
-                                key: ValueKey(isCompletedToday),
-                              ),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  isCompletedToday ? Colors.green : null,
-                              foregroundColor:
-                                  isCompletedToday ? Colors.white : null,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                  ),
+                  HabitProgressCard(habit: widget.habit),
+                ],
               ),
-            ),
-          ),
-        ),
+            )),
       ),
     );
   }
 
-  Widget _buildAnimatedStatChip(
+  void _onComplete(BuildContext context) {
+    final oldLevel = widget.habit.level;
+    context.read<HabitBloc>().add(MarkHabitCompleted(widget.habit));
+
+    // Trigger scale animation
+    _scaleController.forward().then((_) => _scaleController.reset());
+
+    // Check for level up after state update
+    Future.delayed(const Duration(milliseconds: 300), () {
+      final currentState = context.read<HabitBloc>().state;
+      final updatedHabit = currentState.habits.firstWhere(
+        (h) => h.id == widget.habit.id,
+        orElse: () => widget.habit,
+      );
+
+      if (updatedHabit.level > oldLevel) {
+        _showLevelUpDialog(context, updatedHabit.level);
+      }
+    });
+  }
+
+  Widget _buildStatChip(
     BuildContext context,
     String label,
     IconData icon,
     Color color,
   ) {
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0.0, end: 1.0),
-      duration: const Duration(milliseconds: 500),
-      builder: (context, value, child) {
-        return Transform.scale(
-          scale: value,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1 * value),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  icon,
-                  size: 16,
-                  color: color.withOpacity(value),
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  label,
-                  style: TextStyle(
-                    color: color.withOpacity(value),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: color),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: TextStyle(
+              color: color,
+              fontWeight: FontWeight.bold,
             ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 
-  void _animateCompletion(VoidCallback onComplete) {
-    _controller.reverse().then((_) {
-      onComplete();
-      _controller.forward();
-    });
-  }
-
-  void _showEditDialog(BuildContext context) {
+  void _showOptionsDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AddHabitDialog(
-        userId: widget.habit.userId,
-        habit: widget.habit,
+      builder: (context) => AlertDialog(
+        title: const Text('Habit Options'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.edit),
+              title: const Text('Edit'),
+              onTap: () {
+                Navigator.pop(context);
+                // TODO: Show edit dialog
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete, color: Colors.red),
+              title: const Text('Delete', style: TextStyle(color: Colors.red)),
+              onTap: () {
+                Navigator.pop(context);
+                _showDeleteConfirmation(context);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -275,7 +269,8 @@ class _HabitCardState extends State<HabitCard> with SingleTickerProviderStateMix
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Habit'),
-        content: Text('Are you sure you want to delete "${widget.habit.name}"?'),
+        content:
+            Text('Are you sure you want to delete "${widget.habit.name}"?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -293,4 +288,4 @@ class _HabitCardState extends State<HabitCard> with SingleTickerProviderStateMix
       ),
     );
   }
-} 
+}
