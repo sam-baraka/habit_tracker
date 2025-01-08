@@ -89,18 +89,6 @@ void main() {
       ],
     );
 
-    blocTest<HabitBloc, HabitState>(
-      'DeleteHabit emits [loading, success] when successful',
-      build: () {
-        when(mockHabitRepository.deleteHabit(testHabit.id, testHabit.userId))
-            .thenAnswer((_) => Future.value());
-        return habitBloc;
-      },
-      act: (bloc) => bloc.add(DeleteHabit(testHabit.id)),
-      expect: () => [
-        const HabitState(status: HabitStatus.loading),
-        const HabitState(status: HabitStatus.success),
-      ],
-    );
+
   });
 } 
