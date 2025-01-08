@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:solutech_interview/presentation/blocs/auth/auth_bloc.dart';
+import 'package:solutech_interview/presentation/pages/habits_page.dart';
 import 'package:solutech_interview/presentation/pages/login_page.dart';
 import 'package:solutech_interview/presentation/pages/signup_page.dart';
 import 'package:solutech_interview/widgets/main_home_page.dart';
@@ -14,6 +15,10 @@ class AppRouter extends _$AppRouter {
         AutoRoute(
           page: LoginRoute.page,
           path: '/login',
+        ),
+        AutoRoute(
+          page: HabitsRoute.page,
+          path: '/habits',
         ),
         AutoRoute(
           page: SignUpRoute.page,

@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-
+import 'package:solutech_interview/routes/router.dart';
 
 @RoutePage()
 class MainHomePage extends StatelessWidget {
@@ -13,7 +13,9 @@ class MainHomePage extends StatelessWidget {
         title: Text("Welcome home"),
       ),
       body: Center(
-        child: Text("Here is Home"),
+        child: InkWell(
+            onTap: () => context.pushRoute(const HabitsRoute()),
+            child: Text("Here is Home")),
       ),
     );
   }
