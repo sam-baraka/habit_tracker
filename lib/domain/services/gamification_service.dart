@@ -1,4 +1,3 @@
-import 'package:uuid/uuid.dart';
 import 'package:solutech_interview/domain/models/habit.dart';
 import 'package:solutech_interview/domain/models/achievement.dart';
 
