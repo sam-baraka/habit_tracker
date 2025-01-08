@@ -13,16 +13,24 @@ class AuthState extends Equatable {
     this.isSignUpSuccess = false,
   });
 
-  const AuthState.authenticated(User user) : this._(user: user);
+  const AuthState.authenticated(User user) 
+      : this._(user: user);
 
-  const AuthState.unauthenticated() : this._();
+  const AuthState.unauthenticated() 
+      : this._();
 
-  const AuthState.loading() : this._(isLoading: true);
+  const AuthState.loading() 
+      : this._(isLoading: true);
 
-  const AuthState.error(String error) : this._(error: error);
+  const AuthState.error(String error) 
+      : this._(error: error);
 
-  const AuthState.signUpSuccess() : this._(isSignUpSuccess: true);
+  const AuthState.signUpSuccess() 
+      : this._(isSignUpSuccess: true);
 
   @override
   List<Object?> get props => [user, isLoading, error, isSignUpSuccess];
+
+  @override
+  String toString() => 'AuthState($user, $isLoading, $error, $isSignUpSuccess)';
 } 
