@@ -7,14 +7,53 @@
 // ignore_for_file: type=lint
 // coverage:ignore-file
 
-// ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i2;
-import 'package:solutech_interview/widgets/main_home_page.dart' as _i1;
+part of 'router.dart';
+
+abstract class _$AppRouter extends RootStackRouter {
+  // ignore: unused_element
+  _$AppRouter({super.navigatorKey});
+
+  @override
+  final Map<String, PageFactory> pagesMap = {
+    LoginRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const LoginPage(),
+      );
+    },
+    MainHomeRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const MainHomePage(),
+      );
+    },
+    SignUpRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const SignUpPage(),
+      );
+    },
+  };
+}
 
 /// generated route for
-/// [_i1.MainHomePage]
-class MainHomeRoute extends _i2.PageRouteInfo<void> {
-  const MainHomeRoute({List<_i2.PageRouteInfo>? children})
+/// [LoginPage]
+class LoginRoute extends PageRouteInfo<void> {
+  const LoginRoute({List<PageRouteInfo>? children})
+      : super(
+          LoginRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'LoginRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [MainHomePage]
+class MainHomeRoute extends PageRouteInfo<void> {
+  const MainHomeRoute({List<PageRouteInfo>? children})
       : super(
           MainHomeRoute.name,
           initialChildren: children,
@@ -22,10 +61,19 @@ class MainHomeRoute extends _i2.PageRouteInfo<void> {
 
   static const String name = 'MainHomeRoute';
 
-  static _i2.PageInfo page = _i2.PageInfo(
-    name,
-    builder: (data) {
-      return const _i1.MainHomePage();
-    },
-  );
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [SignUpPage]
+class SignUpRoute extends PageRouteInfo<void> {
+  const SignUpRoute({List<PageRouteInfo>? children})
+      : super(
+          SignUpRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'SignUpRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
