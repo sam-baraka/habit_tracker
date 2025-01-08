@@ -17,4 +17,4 @@ samples, guidance on mobile development, and a full API reference.
 
 ## CI/CD Status Badge
 
-[![Flutter CI/CD Pipeline](https://github.com/sam-baraka/solutech_interview/actions/workflows/main.yml/badge.svg)](https://github.com/{username}/{repo-name}/actions/workflows/main.yml)
+[![Flutter CI/CD Pipeline](https://github.com/sam-baraka/solutech_interview/actions/workflows/main.yml/badge.svg)](https://github.com/sam-baraka/habit_tracker/actions/workflows/main.yml)
