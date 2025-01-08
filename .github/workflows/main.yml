@@ -55,7 +55,10 @@ jobs:
         
       - name: Build Web
         run: flutter build web
-        
+
+      - name: Enable Web Frameworks Experiments
+        run: firebase experiments:enable webframeworks
+
       - name: Deploy to Firebase
         run: firebase deploy --token "${{ secrets.FIREBASE_TOKEN }}"
         
