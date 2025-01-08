@@ -3,8 +3,6 @@ name: Flutter CI/CD Pipeline
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
 
 jobs:
   test:
@@ -16,7 +14,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.16.0'
+          flutter-version: '3.27.1'
           channel: 'stable'
           
       - name: Get Dependencies
@@ -41,7 +39,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.16.0'
+          flutter-version: '3.27.1'
           channel: 'stable'
           
       - name: Get Dependencies
@@ -57,7 +55,10 @@ jobs:
         
       - name: Build Web
         run: flutter build web
-        
+
+      - name: Enable Web Frameworks Experiments
+        run: firebase experiments:enable webframeworks
+
       - name: Deploy to Firebase
         run: firebase deploy --token "${{ secrets.FIREBASE_TOKEN }}"
         
