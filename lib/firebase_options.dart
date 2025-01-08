@@ -71,4 +71,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'solutech-interview-sam-baraka.firebasestorage.app',
     iosBundleId: 'com.solutech.interview',
   );
+
 }
