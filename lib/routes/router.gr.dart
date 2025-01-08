@@ -15,6 +15,16 @@ abstract class _$AppRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
+    HabitStatsRoute.name: (routeData) {
+      final args = routeData.argsAs<HabitStatsRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: HabitStatsPage(
+          key: args.key,
+          habit: args.habit,
+        ),
+      );
+    },
     HabitsRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -40,6 +50,44 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
   };
+}
+
+/// generated route for
+/// [HabitStatsPage]
+class HabitStatsRoute extends PageRouteInfo<HabitStatsRouteArgs> {
+  HabitStatsRoute({
+    Key? key,
+    required Habit habit,
+    List<PageRouteInfo>? children,
+  }) : super(
+          HabitStatsRoute.name,
+          args: HabitStatsRouteArgs(
+            key: key,
+            habit: habit,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'HabitStatsRoute';
+
+  static const PageInfo<HabitStatsRouteArgs> page =
+      PageInfo<HabitStatsRouteArgs>(name);
+}
+
+class HabitStatsRouteArgs {
+  const HabitStatsRouteArgs({
+    this.key,
+    required this.habit,
+  });
+
+  final Key? key;
+
+  final Habit habit;
+
+  @override
+  String toString() {
+    return 'HabitStatsRouteArgs{key: $key, habit: $habit}';
+  }
 }
 
 /// generated route for
