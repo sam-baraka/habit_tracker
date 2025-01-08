@@ -69,6 +69,41 @@ class Habit extends Equatable {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'userId': userId,
+      'frequency': frequency,
+      'startDate': startDate.toIso8601String(),
+      'currentStreak': currentStreak,
+      'longestStreak': longestStreak,
+      'level': level,
+      'xp': xp,
+      'completedDates': completedDates.map((date) => date.toIso8601String()).toList(),
+    };
+  }
+
+  factory Habit.fromJson(Map<String, dynamic> json) {
+    return Habit(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      description: json['description'] as String,
+      userId: json['userId'] as String,
+      frequency: json['frequency'] as int,
+      startDate: DateTime.parse(json['startDate'] as String),
+      currentStreak: json['currentStreak'] as int? ?? 0,
+      longestStreak: json['longestStreak'] as int? ?? 0,
+      level: json['level'] as int? ?? 1,
+      xp: json['xp'] as int? ?? 0,
+      completedDates: (json['completedDates'] as List<dynamic>?)
+          ?.map((date) => DateTime.parse(date as String))
+          .toList() ??
+          [],
+    );
+  }
+
   @override
   List<Object?> get props => [
         id,
