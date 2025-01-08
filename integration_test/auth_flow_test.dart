@@ -3,7 +3,7 @@ import 'package:integration_test/integration_test.dart';
 import 'package:flutter/material.dart';
 import 'package:solutech_interview/main.dart';
 import 'package:solutech_interview/data/repositories/auth_repository.dart';
-
+import 'package:solutech_interview/data/repositories/habit_repository.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
@@ -13,6 +13,7 @@ void main() {
       // Build the app
       await tester.pumpWidget(HabitTracker(
         authRepository: AuthRepository(),
+        habitRepository: HabitRepository(),
       ));
       await tester.pumpAndSettle();
 
@@ -90,6 +91,7 @@ void main() {
       // Build the app
       await tester.pumpWidget(HabitTracker(
         authRepository: AuthRepository(),
+        habitRepository: HabitRepository(),
       ));
       await tester.pumpAndSettle();
 
@@ -106,6 +108,7 @@ void main() {
       // Build the app
       await tester.pumpWidget(HabitTracker(
         authRepository: AuthRepository(),
+        habitRepository: HabitRepository(),
       ));
       await tester.pumpAndSettle();
 
