@@ -40,7 +40,6 @@ void main() {
     mockHabitBox = MockBox<Map>();
     mockCollectionReference = MockCollectionReference();
     mockDocumentReference = MockDocumentReference();
-    mockQueryDocumentSnapshot = MockQueryDocumentSnapshot();
     habitRepository = HabitRepository(
       firestore: mockFirestore,
       habitBox: mockHabitBox,
