@@ -34,7 +34,6 @@ void main() {
   late HabitRepository habitRepository;
   late MockCollectionReference mockCollectionReference;
   late MockDocumentReference mockDocumentReference;
-  late MockQueryDocumentSnapshot mockQueryDocumentSnapshot;
 
   setUp(() {
     mockFirestore = MockFirebaseFirestore();
