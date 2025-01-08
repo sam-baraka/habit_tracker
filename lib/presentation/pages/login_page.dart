@@ -55,6 +55,10 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Get screen size
+    final screenSize = MediaQuery.of(context).size;
+    final isDesktop = screenSize.width > 800;
+
     return Scaffold(
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
@@ -69,89 +73,148 @@ class _LoginPageState extends State<LoginPage> {
           }
         },
         child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    'Welcome Back',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 32),
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.email_outlined),
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.lock_outline),
-                    ),
-                    obscureText: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 24),
-                  BlocBuilder<AuthBloc, AuthState>(
-                    builder: (context, state) {
-                      return state.isLoading
-                          ? const Center(child: CircularProgressIndicator())
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    if (_formKey.currentState!.validate()) {
-                                      context.read<AuthBloc>().add(
-                                            AuthLoginRequested(
-                                              _emailController.text,
-                                              _passwordController.text,
+          child: Center(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(
+                horizontal: isDesktop ? screenSize.width * 0.1 : 16.0,
+                vertical: 16.0,
+              ),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 800),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // App Icon
+                      Center(
+                        child: ClipRRect(
+                          borderRadius:
+                              BorderRadius.circular(isDesktop ? 30 : 20),
+                          child: Image.asset(
+                            'assets/icon/icon.jpeg',
+                            width: isDesktop ? 200 : 120,
+                            height: isDesktop ? 200 : 120,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: isDesktop ? 40 : 24),
+
+                      Text(
+                        'Welcome Back',
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium
+                            ?.copyWith(
+                              fontSize: isDesktop ? 32 : 24,
+                            ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: isDesktop ? 32 : 24),
+
+                      TextFormField(
+                        controller: _emailController,
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          border: const OutlineInputBorder(),
+                          prefixIcon: const Icon(Icons.email_outlined),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: isDesktop ? 20 : 16,
+                          ),
+                        ),
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: isDesktop ? 24 : 16),
+
+                      TextFormField(
+                        controller: _passwordController,
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          border: const OutlineInputBorder(),
+                          prefixIcon: const Icon(Icons.lock_outline),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: isDesktop ? 20 : 16,
+                          ),
+                        ),
+                        obscureText: true,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: isDesktop ? 32 : 24),
+
+                      BlocBuilder<AuthBloc, AuthState>(
+                        builder: (context, state) {
+                          return state.isLoading
+                              ? const Center(child: CircularProgressIndicator())
+                              : Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    Center(
+                                      child: SizedBox(
+                                        width:
+                                            isDesktop ? 300 : double.infinity,
+                                        height: isDesktop ? 56 : 48,
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              context.read<AuthBloc>().add(
+                                                    AuthLoginRequested(
+                                                      _emailController.text,
+                                                      _passwordController.text,
+                                                    ),
+                                                  );
+                                            }
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: isDesktop ? 16 : 12,
                                             ),
-                                          );
-                                    }
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    padding: const EdgeInsets.all(16),
-                                  ),
-                                  child: const Text('Login'),
-                                ),
-                                const SizedBox(height: 24),
-                                TextButton(
-                                  onPressed: () {
-                                    context.router.replace(const SignUpRoute());
-                                  },
-                                  child: const Text(
-                                    'Don\'t have an account? Sign up',
-                                  ),
-                                ),
-                              ],
-                            );
-                    },
+                                          ),
+                                          child: Text(
+                                            'Login',
+                                            style: TextStyle(
+                                              fontSize: isDesktop ? 18 : 16,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: isDesktop ? 24 : 16),
+                                    TextButton(
+                                      onPressed: () {
+                                        context.router
+                                            .replace(const SignUpRoute());
+                                      },
+                                      child: Text(
+                                        'Don\'t have an account? Sign up',
+                                        style: TextStyle(
+                                          fontSize: isDesktop ? 16 : 14,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                        },
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
