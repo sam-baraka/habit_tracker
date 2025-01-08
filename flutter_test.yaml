@@ -1,0 +1,5 @@
+coverage:
+  ignore:
+    - "lib/generated/*.dart"
+    - "lib/**.g.dart"
+    - "lib/**.freezed.dart" 

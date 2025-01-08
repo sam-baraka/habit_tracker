@@ -7,24 +7,65 @@ on:
     branches: [main]
 
 jobs:
-  build:
-    name: Build Web and APK
+  test:
+    name: Run Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.27.1"
-      - run: flutter pub get
-      - uses: actions/setup-node@v3
+          flutter-version: '3.16.0'
+          channel: 'stable'
+          
+      - name: Get Dependencies
+        run: flutter pub get
+        
+      - name: Run Tests
+        run: flutter test --coverage
+        
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage/lcov.info
+
+  build:
+    name: Build Web and APK
+    needs: test # This ensures tests pass before building
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.16.0'
+          channel: 'stable'
+          
+      - name: Get Dependencies
+        run: flutter pub get
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: '18'
-      - run: npm install -g firebase-tools
-      - run: firebase --token="${{ secrets.FIREBASE_TOKEN }}" projects:list
-      - run: firebase experiments:enable webframeworks
-      - run: firebase --token="${{ secrets.FIREBASE_TOKEN }}" deploy
-      - run: flutter build apk --release
-      - uses: actions/upload-artifact@v3
+          
+      - name: Install Firebase Tools
+        run: npm install -g firebase-tools
+        
+      - name: Build Web
+        run: flutter build web
+        
+      - name: Deploy to Firebase
+        run: firebase deploy --token "${{ secrets.FIREBASE_TOKEN }}"
+        
+      - name: Build Android APK
+        run: flutter build apk --release
+        
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
         with:
           name: release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
@@ -33,22 +74,25 @@ jobs:
     name: Create Release
     needs: build
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
+      - name: Download APK
+        uses: actions/download-artifact@v3
         with:
           name: release-apk
+          
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GTH_TKN }}
         with:
-          tag_name: ${{ github.run_number }}
-          release_name: Release ${{ github.run_number }}
+          tag_name: v1.0.${{ github.run_number }}
+          release_name: Release v1.0.${{ github.run_number }}
           draft: false
           prerelease: false
-      - name: Upload APK
+          
+      - name: Upload APK to Release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GTH_TKN }}

@@ -14,3 +14,7 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+## CI/CD Status Badge
+
+[![Flutter CI/CD Pipeline](https://github.com/sam-baraka/solutech_interview/actions/workflows/main.yml/badge.svg)](https://github.com/{username}/{repo-name}/actions/workflows/main.yml)
