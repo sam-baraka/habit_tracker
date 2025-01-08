@@ -13,7 +13,6 @@ class HabitProgressCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final xpForNext = GamificationService.xpForNextLevel(habit.xp);
     final xpProgress = habit.xp % GamificationService.xpPerLevel;
     final progressPercent = xpProgress / GamificationService.xpPerLevel;
 
