@@ -1,4 +1,4 @@
-# solutech_interview
+# Habit Tracker
 
 A new Flutter project.
 
