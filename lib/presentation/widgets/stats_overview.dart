@@ -8,6 +8,8 @@ class StatsOverview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isSmallScreen = MediaQuery.of(context).size.width < 600;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return BlocBuilder<HabitBloc, HabitState>(
       builder: (context, state) {
@@ -26,8 +28,10 @@ class StatsOverview extends StatelessWidget {
         );
 
         return Container(
-          margin: const EdgeInsets.all(16),
-          padding: const EdgeInsets.all(16),
+          margin: EdgeInsets.symmetric(
+            horizontal: isSmallScreen ? 16 : screenWidth * 0.1,
+          ),
+          padding: EdgeInsets.all(isSmallScreen ? 16 : 24),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
@@ -35,11 +39,51 @@ class StatsOverview extends StatelessWidget {
                 theme.colorScheme.secondary,
               ],
             ),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(isSmallScreen ? 16 : 24),
+            boxShadow: [
+              BoxShadow(
+                color: theme.shadowColor.withOpacity(0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-          child: Column(
-            children: [
-              Row(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              // Use Wrap for very small screens
+              if (constraints.maxWidth < 400) {
+                return Wrap(
+                  spacing: 16,
+                  runSpacing: 16,
+                  alignment: WrapAlignment.spaceAround,
+                  children: [
+                    _buildStatItem(
+                      context,
+                      'Total Habits',
+                      totalHabits.toString(),
+                      Icons.list_alt,
+                      isSmallScreen,
+                    ),
+                    _buildStatItem(
+                      context,
+                      'Completed Today',
+                      '$completedToday/$totalHabits',
+                      Icons.check_circle,
+                      isSmallScreen,
+                    ),
+                    _buildStatItem(
+                      context,
+                      'Total Streaks',
+                      totalStreaks.toString(),
+                      Icons.local_fire_department,
+                      isSmallScreen,
+                    ),
+                  ],
+                );
+              }
+
+              // Use Row for larger screens
+              return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   _buildStatItem(
@@ -47,22 +91,25 @@ class StatsOverview extends StatelessWidget {
                     'Total Habits',
                     totalHabits.toString(),
                     Icons.list_alt,
+                    isSmallScreen,
                   ),
                   _buildStatItem(
                     context,
                     'Completed Today',
                     '$completedToday/$totalHabits',
                     Icons.check_circle,
+                    isSmallScreen,
                   ),
                   _buildStatItem(
                     context,
                     'Total Streaks',
                     totalStreaks.toString(),
                     Icons.local_fire_department,
+                    isSmallScreen,
                   ),
                 ],
-              ),
-            ],
+              );
+            },
           ),
         );
       },
@@ -74,32 +121,40 @@ class StatsOverview extends StatelessWidget {
     String label,
     String value,
     IconData icon,
+    bool isSmallScreen,
   ) {
-    return Column(
-      children: [
-        Icon(
-          icon,
-          color: Colors.white,
-          size: 24,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          value,
-          style: const TextStyle(
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: EdgeInsets.all(isSmallScreen ? 8 : 12),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
             color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+            size: isSmallScreen ? 24 : 32,
           ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: 12,
+          SizedBox(height: isSmallScreen ? 8 : 12),
+          Text(
+            value,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: isSmallScreen ? 20 : 28,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-      ],
+          SizedBox(height: isSmallScreen ? 4 : 8),
+          Text(
+            label,
+            style: TextStyle(
+              color: Colors.white70,
+              fontSize: isSmallScreen ? 12 : 14,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 }

@@ -64,7 +64,7 @@ class _MainHomePageState extends State<MainHomePage> {
             child: Center(
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  maxWidth: isSmallScreen ? double.infinity : 1200,
+                  maxWidth: isSmallScreen ? double.infinity : 800,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -89,8 +89,13 @@ class _MainHomePageState extends State<MainHomePage> {
               ),
             ),
           ),
-          const SliverToBoxAdapter(
-            child: StatsOverview(),
+          SliverToBoxAdapter(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: isSmallScreen ? double.infinity : 800,
+              ),
+              child: const StatsOverview(),
+            ),
           ),
           SliverToBoxAdapter(
             child: Center(
