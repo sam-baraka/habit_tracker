@@ -31,8 +31,8 @@ The application is hosted on Firebase and can be accessed at:
 
 2. **Clone the Repository**
    ```bash
-   git clone https://github.com/sam-baraka/solutech_interview.git
-   cd solutech_interview
+   git clone https://github.com/sam-baraka/habit_tracker.git
+   cd habit_tracker
    ```
 
 3. **Install Dependencies**
@@ -108,7 +108,7 @@ Our CI/CD pipeline is implemented using GitHub Actions and consists of three mai
   - GTH_TKN (GitHub Token)
 
 ## CI/CD Status
-[![Flutter CI/CD Pipeline](https://github.com/sam-baraka/solutech_interview/actions/workflows/main.yml/badge.svg)](https://github.com/sam-baraka/habit_tracker/actions/workflows/main.yml)
+[![Flutter CI/CD Pipeline](https://github.com/sam-baraka/habit_tracker/actions/workflows/main.yml/badge.svg)](https://github.com/sam-baraka/habit_tracker/actions/workflows/main.yml)
 
 ## Getting Started with Flutter
 
