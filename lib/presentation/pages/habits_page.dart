@@ -28,61 +28,78 @@ class _HabitsPageState extends State<HabitsPage> {
   @override
   Widget build(BuildContext context) {
     final user = context.select((AuthBloc bloc) => bloc.state.user);
+    final isSmallScreen = MediaQuery.of(context).size.width < 600;
 
-    return BlocListener<HabitBloc, HabitState>(
-      listener: (context, state) {
-        if (state.error != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.error!)),
-          );
-        }
-        if (state.lastCompletedHabit != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Great job! Habit marked as completed.'),
-              backgroundColor: Colors.green,
-            ),
-          );
-        }
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('My Habits'),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AddHabitDialog(userId: user!.id),
-                );
-              },
-            ),
-          ],
-        ),
-        body: BlocBuilder<HabitBloc, HabitState>(
-          builder: (context, state) {
-            if (state.status == HabitStatus.loading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            if (state.habits.isEmpty) {
-              return const Center(
-                child: Text('No habits yet. Add one to get started!'),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('My Habits'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AddHabitDialog(userId: user!.id),
               );
-            }
+            },
+          ),
+        ],
+      ),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: isSmallScreen ? double.infinity : 1200,
+          ),
+          child: BlocBuilder<HabitBloc, HabitState>(
+            builder: (context, state) {
+              if (state.status == HabitStatus.loading) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-            return ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: state.habits.length,
-              itemBuilder: (context, index) {
-                final habit = state.habits[index];
-                return HabitCard(habit: habit);
-              },
-            );
-          },
+              if (state.habits.isEmpty) {
+                return Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(isSmallScreen ? 16 : 32),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/icon/icon.jpeg',
+                          width: isSmallScreen ? 100 : 150,
+                          height: isSmallScreen ? 100 : 150,
+                        ),
+                        SizedBox(height: isSmallScreen ? 24 : 32),
+                        Text(
+                          'No habits yet',
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              ?.copyWith(
+                                fontSize: isSmallScreen ? 24 : 32,
+                              ),
+                        ),
+                        // ... rest of the empty state UI
+                      ],
+                    ),
+                  ),
+                );
+              }
+
+              return ListView.builder(
+                padding: EdgeInsets.symmetric(
+                  horizontal: isSmallScreen ? 16 : 32,
+                  vertical: 16,
+                ),
+                itemCount: state.habits.length,
+                itemBuilder: (context, index) {
+                  final habit = state.habits[index];
+                  return HabitCard(habit: habit);
+                },
+              );
+            },
+          ),
         ),
       ),
     );
   }
-} 
+}

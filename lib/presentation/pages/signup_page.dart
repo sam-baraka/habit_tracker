@@ -57,6 +57,8 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isSmallScreen = MediaQuery.of(context).size.width < 600;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Create Account'),
@@ -74,113 +76,141 @@ class _SignUpPageState extends State<SignUpPage> {
           }
         },
         child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    'Join Habit Tracker',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 32),
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.email_outlined),
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
-                      }
-                      if (!value.contains('@') || !value.contains('.')) {
-                        return 'Please enter a valid email';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.lock_outline),
-                    ),
-                    obscureText: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a password';
-                      }
-                      if (value.length < 6) {
-                        return 'Password must be at least 6 characters';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _confirmPasswordController,
-                    decoration: const InputDecoration(
-                      labelText: 'Confirm Password',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.lock_outline),
-                    ),
-                    obscureText: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please confirm your password';
-                      }
-                      if (value != _passwordController.text) {
-                        return 'Passwords do not match';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 24),
-                  BlocBuilder<AuthBloc, AuthState>(
-                    builder: (context, state) {
-                      return state.isLoading
-                          ? const Center(child: CircularProgressIndicator())
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    if (_formKey.currentState!.validate()) {
-                                      context.read<AuthBloc>().add(
-                                            AuthSignUpRequested(
-                                              _emailController.text,
-                                              _passwordController.text,
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 400),
+                  child: Card(
+                    elevation: isSmallScreen ? 0 : 4,
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Center(
+                              child: Image.asset(
+                                'assets/icon/icon.jpeg',
+                                width: 80,
+                                height: 80,
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            Text(
+                              'Join Habit Tracker',
+                              style: Theme.of(context).textTheme.headlineMedium,
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 32),
+                            TextFormField(
+                              controller: _emailController,
+                              decoration: const InputDecoration(
+                                labelText: 'Email',
+                                border: OutlineInputBorder(),
+                                prefixIcon: Icon(Icons.email_outlined),
+                              ),
+                              keyboardType: TextInputType.emailAddress,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter your email';
+                                }
+                                if (!value.contains('@') ||
+                                    !value.contains('.')) {
+                                  return 'Please enter a valid email';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _passwordController,
+                              decoration: const InputDecoration(
+                                labelText: 'Password',
+                                border: OutlineInputBorder(),
+                                prefixIcon: Icon(Icons.lock_outline),
+                              ),
+                              obscureText: true,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter a password';
+                                }
+                                if (value.length < 6) {
+                                  return 'Password must be at least 6 characters';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _confirmPasswordController,
+                              decoration: const InputDecoration(
+                                labelText: 'Confirm Password',
+                                border: OutlineInputBorder(),
+                                prefixIcon: Icon(Icons.lock_outline),
+                              ),
+                              obscureText: true,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please confirm your password';
+                                }
+                                if (value != _passwordController.text) {
+                                  return 'Passwords do not match';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 24),
+                            BlocBuilder<AuthBloc, AuthState>(
+                              builder: (context, state) {
+                                return state.isLoading
+                                    ? const Center(
+                                        child: CircularProgressIndicator())
+                                    : Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.stretch,
+                                        children: [
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              if (_formKey.currentState!
+                                                  .validate()) {
+                                                context.read<AuthBloc>().add(
+                                                      AuthSignUpRequested(
+                                                        _emailController.text,
+                                                        _passwordController
+                                                            .text,
+                                                      ),
+                                                    );
+                                              }
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              padding: const EdgeInsets.all(16),
                                             ),
-                                          );
-                                    }
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    padding: const EdgeInsets.all(16),
-                                  ),
-                                  child: const Text('Sign Up'),
-                                ),
-                                const SizedBox(height: 24),
-                                TextButton(
-                                  onPressed: () {
-                                    context.router.replace(const LoginRoute());
-                                  },
-                                  child: const Text(
-                                    'Already have an account? Log in',
-                                  ),
-                                ),
-                              ],
-                            );
-                    },
+                                            child: const Text('Sign Up'),
+                                          ),
+                                          const SizedBox(height: 24),
+                                          TextButton(
+                                            onPressed: () {
+                                              context.router
+                                                  .replace(const LoginRoute());
+                                            },
+                                            child: const Text(
+                                              'Already have an account? Log in',
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                ],
+                ),
               ),
             ),
           ),

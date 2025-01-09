@@ -37,10 +37,17 @@ class _LoginPageState extends State<LoginPage> {
               Text('Welcome Back!'),
             ],
           ),
-          content: const Text(
-            'You have successfully logged in.',
+          content: Text(
+            'You are successfully logged in as ${context.read<AuthBloc>().state.user?.email}',
           ),
           actions: [
+            TextButton(
+              onPressed: () {
+                context.read<AuthBloc>().add(AuthLogoutRequested());
+                Navigator.of(context).pop();
+              },
+              child: const Text('Not me'),
+            ),
             TextButton(
               onPressed: () {
                 context.router.replace(const MainHomeRoute());
