@@ -62,12 +62,6 @@ void main() {
   });
 
   group('AuthLoginRequested', () {
-    final mockUser = User(
-      id: 'test-id',
-      email: 'test@example.com',
-      displayName: 'Test User',
-      lastSyncTime: DateTime.now(),
-    );
 
 
     blocTest<AuthBloc, AuthState>(

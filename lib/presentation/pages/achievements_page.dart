@@ -11,67 +11,84 @@ class AchievementsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isSmallScreen = MediaQuery.of(context).size.width < 600;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Achievements'),
       ),
-      body: BlocBuilder<HabitBloc, HabitState>(
-        builder: (context, state) {
-          final allAchievements = _getAllAchievements(state);
+      body: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: isSmallScreen ? double.infinity : 1200,
+          ),
+          child: BlocBuilder<HabitBloc, HabitState>(
+            builder: (context, state) {
+              final allAchievements = _getAllAchievements(state);
 
-          if (allAchievements.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.emoji_events_outlined,
-                    size: 64,
-                    color: theme.colorScheme.primary.withOpacity(0.5),
+              if (allAchievements.isEmpty) {
+                return Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(isSmallScreen ? 16 : 32),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.emoji_events_outlined,
+                          size: isSmallScreen ? 64 : 96,
+                          color: theme.colorScheme.primary.withOpacity(0.5),
+                        ),
+                        SizedBox(height: isSmallScreen ? 16 : 24),
+                        Text(
+                          'No achievements yet',
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            fontSize: isSmallScreen ? 24 : 32,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Keep building your habits to earn achievements!',
+                          style: theme.textTheme.bodyMedium,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'No achievements yet',
-                    style: theme.textTheme.titleLarge,
+                );
+              }
+
+              return CustomScrollView(
+                slivers: [
+                  SliverPadding(
+                    padding: EdgeInsets.all(isSmallScreen ? 16 : 24),
+                    sliver: SliverToBoxAdapter(
+                      child: _buildAchievementStats(
+                        context,
+                        allAchievements,
+                        isSmallScreen,
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Keep building your habits to earn achievements!',
-                    style: theme.textTheme.bodyMedium,
-                    textAlign: TextAlign.center,
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final achievement = allAchievements[index];
+                          return _AchievementCard(
+                            achievement: achievement,
+                            habitName: _getHabitName(state, achievement),
+                          );
+                        },
+                        childCount: allAchievements.length,
+                      ),
+                    ),
                   ),
                 ],
-              ),
-            );
-          }
-
-          return CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: _buildAchievementStats(context, allAchievements),
-                ),
-              ),
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final achievement = allAchievements[index];
-                      return _AchievementCard(
-                        achievement: achievement,
-                        habitName: _getHabitName(state, achievement),
-                      );
-                    },
-                    childCount: allAchievements.length,
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
+              );
+            },
+          ),
+        ),
       ),
     );
   }
@@ -79,6 +96,7 @@ class AchievementsPage extends StatelessWidget {
   Widget _buildAchievementStats(
     BuildContext context,
     List<Achievement> achievements,
+    bool isSmallScreen,
   ) {
     final theme = Theme.of(context);
     final totalAchievements = achievements.length;

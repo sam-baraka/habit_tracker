@@ -11,25 +11,43 @@ class AnalyticsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isSmallScreen = MediaQuery.of(context).size.width < 600;
+
     return DefaultTabController(
       length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Analytics'),
-          bottom: const TabBar(
+          bottom: TabBar(
             tabs: [
-              Tab(text: 'Overview'),
-              Tab(text: 'Trends'),
-              Tab(text: 'Habits'),
+              Tab(
+                text: 'Overview',
+                icon: isSmallScreen ? null : const Icon(Icons.dashboard),
+              ),
+              Tab(
+                text: 'Trends',
+                icon: isSmallScreen ? null : const Icon(Icons.trending_up),
+              ),
+              Tab(
+                text: 'Habits',
+                icon: isSmallScreen ? null : const Icon(Icons.list),
+              ),
             ],
           ),
         ),
-        body: TabBarView(
-          children: [
-            _OverviewTab(),
-            _TrendsTab(),
-            _HabitsTab(),
-          ],
+        body: Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: isSmallScreen ? double.infinity : 1200,
+            ),
+            child: TabBarView(
+              children: [
+                _OverviewTab(isSmallScreen: isSmallScreen),
+                _TrendsTab(isSmallScreen: isSmallScreen),
+                _HabitsTab(isSmallScreen: isSmallScreen),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -37,11 +55,14 @@ class AnalyticsPage extends StatelessWidget {
 }
 
 class _OverviewTab extends StatelessWidget {
+  final bool isSmallScreen;
+
+  const _OverviewTab({required this.isSmallScreen});
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HabitBloc, HabitState>(
       builder: (context, state) {
-
         return ListView(
           padding: const EdgeInsets.all(16),
           children: [
@@ -324,6 +345,10 @@ class _OverviewTab extends StatelessWidget {
 }
 
 class _TrendsTab extends StatelessWidget {
+  final bool isSmallScreen;
+
+  const _TrendsTab({required this.isSmallScreen});
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HabitBloc, HabitState>(
@@ -595,6 +620,10 @@ class _TrendsTab extends StatelessWidget {
 }
 
 class _HabitsTab extends StatelessWidget {
+  final bool isSmallScreen;
+
+  const _HabitsTab({required this.isSmallScreen});
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HabitBloc, HabitState>(
