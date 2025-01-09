@@ -4,6 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:solutech_interview/presentation/blocs/auth/auth_bloc.dart';
 import 'package:solutech_interview/presentation/blocs/habit/habit_bloc.dart';
+import 'package:solutech_interview/presentation/blocs/theme/theme_bloc.dart';
 import 'package:solutech_interview/routes/router.dart';
 
 @RoutePage()
@@ -109,6 +110,50 @@ class ProfilePage extends StatelessWidget {
                           ),
                         );
                       },
+                    ),
+                    Card(
+                      child: Padding(
+                        padding: EdgeInsets.all(isSmallScreen ? 16 : 24),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Appearance',
+                              style: theme.textTheme.titleLarge,
+                            ),
+                            const SizedBox(height: 16),
+                            BlocBuilder<ThemeBloc, ThemeState>(
+                              builder: (context, state) {
+                                return SwitchListTile(
+                                  title: Row(
+                                    children: [
+                                      Icon(
+                                        state.isDarkMode
+                                            ? Icons.dark_mode
+                                            : Icons.light_mode,
+                                        color: theme.colorScheme.primary,
+                                      ),
+                                      const SizedBox(width: 16),
+                                      Text(
+                                        state.isDarkMode
+                                            ? 'Dark Mode'
+                                            : 'Light Mode',
+                                        style: theme.textTheme.titleMedium,
+                                      ),
+                                    ],
+                                  ),
+                                  value: state.isDarkMode,
+                                  onChanged: (value) {
+                                    context
+                                        .read<ThemeBloc>()
+                                        .add(ThemeChanged(value));
+                                  },
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Card(
@@ -233,10 +278,6 @@ class ProfilePage extends StatelessWidget {
                       },
                       icon: const Icon(Icons.logout),
                       label: const Text('Sign Out'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: theme.colorScheme.error,
-                        foregroundColor: theme.colorScheme.onError,
-                      ),
                     ),
                   ],
                 ),
