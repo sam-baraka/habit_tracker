@@ -6,9 +6,6 @@
 
 A Flutter application for tracking daily habits with gamification features.
 
-## Live Demo
-The application is hosted on Firebase and can be accessed at:
-[https://solutech-interview-sam-baraka.web.app](https://solutech-interview-sam-baraka.web.app)
 
 ## Features Implemented
 - ✅ User Authentication
