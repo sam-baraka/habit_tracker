@@ -17,6 +17,17 @@ A Flutter application for tracking daily habits with gamification features.
 - ✅ Dark/Light Theme
 - ✅ Gamification (XP, Levels, Achievements)
 
+
+## Live Demo
+
+<div style="position: relative; width: 100%; max-width: 400px; aspect-ratio: 16/9;">
+  <iframe 
+    src="https://solutech-interview-sam-baraka.web.app/" 
+    style="position: absolute; width: 100%; height: 100%; border: none;" 
+    allowfullscreen>
+  </iframe>
+</div>
+
 ## Local Development Setup
 
 1. **Prerequisites**
